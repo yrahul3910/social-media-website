@@ -14,7 +14,7 @@ const compiler = webpack(config);
 
 dotenv.config();
 app.use(compression());
-app.use(express.static(path.resolve() + '/public'));
+app.use(express.static(__dirname + '/public'));
 app.use(require('webpack-dev-middleware')(compiler, {
     noInfo: true,
     publicPath: config.output.publicPath

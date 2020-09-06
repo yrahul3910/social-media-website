@@ -1,17 +1,23 @@
-input[type="text"], input[type="password"]
-  padding: 0.75em
+%border-styling
+  padding: 0.75rem 1.5rem
+  background-color: rgba(255, 255, 255, 0.1)
+  border-radius: 9999px
+  color: inherit
+  border-width: .125rem
+  border-color: $grey
+  border-style: solid
+  outline: none
+
+input[type="text"], input[type="password"], input[type="search"]
+  @extend %border-styling
+  font-size: 1em 
   display: block
-  border-radius: 6px
-  border-width: 1px
-  border-color: gray
-  font-size: 1em
+
 
 button
+  @extend %border-styling 
   font-family: sans-serif
+  cursor: pointer
   font-size: 1em
-  padding: 0.75em
-  border-radius: 12px
   border-color: cadetblue
-  border-width: 3px
-  background-color: white
 
