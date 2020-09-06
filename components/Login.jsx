@@ -55,22 +55,20 @@ class Login extends React.Component {
                 <div className="row center" style={{position: 'absolute', top: '120px', width: '25%'}}>
                     <form>
                         <div className="row">
-                            <div className="col-4 col-gap-4">
-                                <input ref={this.username} type="text" className="validate" />
-                                <label htmlFor="username">Username</label>
+                            <div className="col-4">
+                                <input ref={this.username} type="text" placeholder="Username" className="validate" />
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-4 col-gap-4">
-                                <input ref={this.password} type="password" className="validate" />
-                                <label htmlFor="password">Password</label>
+                            <div className="col-4">
+                                <input ref={this.password} type="password" placeholder="Password" className="validate" />
                             </div>
                         </div>
                         <div className="row">
-                            <button className="col-4 col-gap-4" onClick={this.click}>Log in</button>
+                            <button className="col-4" onClick={this.click}>Log in</button>
                         </div>
                         <div className="row">
-                            <div className="col-4 col-gap-4">
+                            <div className="col-4">
                                 Don&rsquo;t have an account?
                                 <Link to="/register">
                                     {' Sign up in seconds.'}
