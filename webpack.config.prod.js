@@ -2,7 +2,7 @@ import path from 'path';
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import WebpackMd5Hash from 'webpack-md5-hash';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 export default {
     devtool: 'source-map',
@@ -16,8 +16,7 @@ export default {
         filename: '[name].[chunkhash].js'
     },
     plugins: [
-        // Generate an external CSS file with a hash in the filename
-        new ExtractTextPlugin('[name].[contenthash].css'),
+        new MiniCssExtractPlugin(),
 
         // Hash the files using MD5 so their names change when the content does
         new WebpackMd5Hash(),
@@ -50,17 +49,23 @@ export default {
         })
     ],
     module: {
-        loaders: [
-            {test: /\.jsx?$/, exclude: /node_modules/, loaders: ['babel-loader']},
-            {test: /\.sass$/, loader: ExtractTextPlugin.extract('style', 'sass')}
-        ],
         rules: [
             {
                 test: /\.css$/,
-                use: ExtractTextPlugin.extract({
-                    fallback: 'style-loader',
-                    use: 'css-loader'
-                })
+                use: [MiniCssExtractPlugin.loader, 'css-loader']
+            },
+            {
+                test: /\.sass$/,
+                use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+            },
+            {
+                test: /\.jsx?$/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env', '@babel/preset-react']
+                    }
+                }
             }
         ]
     }
