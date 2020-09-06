@@ -3,9 +3,10 @@ import path from 'path';
 import open from 'open';
 import compression from 'compression';
 import dotenv from 'dotenv';
+import chalk from 'chalk';
 
 import webpack from 'webpack';
-import config from '../webpack.config.dev';
+import config from '../webpack.config.dev.js';
 
 const port = 8000;
 const app = express();
@@ -19,11 +20,12 @@ app.use(require('webpack-dev-middleware')(compiler, {
     publicPath: config.output.publicPath
 }));
 
-app.get('/', (req, res) => {
+app.get('/*', (req, res) => {
     res.sendFile(path.join(__dirname, '../src/index.html'));
 });
 
 app.listen(port, err => {
     if (err) throw err;
     open('http://localhost:' + port);
+    chalk.green('Server is running at port ' + port);
 });

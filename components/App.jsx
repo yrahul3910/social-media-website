@@ -1,6 +1,8 @@
 import React from 'react';
 import {Switch, Route} from 'react-router-dom';
 import MainPage from './MainPage.jsx';
+import Login from './Login.jsx';
+import Register from './Register.jsx';
 
 export default class App extends React.Component {
     render() {
@@ -8,6 +10,12 @@ export default class App extends React.Component {
             <Switch>
                 <Route exact path='/' render={props =>
                     <MainPage {...props} />
+                }/>
+                <Route exact path='/login' render={props =>
+                    <Login {...props} />
+                }/>
+                <Route exact path='/register' render={props =>
+                    <Register {...props} />
                 }/>
             </Switch>
         );
