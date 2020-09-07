@@ -21,11 +21,17 @@ We are a social media website with a strong focus on privacy. All our code is fu
 
 ## Why AGPL?
 
-The AGPL is a strong copyleft license that prohibits large corporations from turning this into a closed-source, proprietary software. While it allows modifications, it expects them to also be open-source. This is in line with our ideals: we encourage others to build upon and share our work, but only as long as they make it open source.
+The AGPL is a strong copyleft license that prohibits large corporations from turning this into a closed-source, proprietary software. While it allows modifications, it expects them to also be open-source. This is in line with our ideals: we encourage others to build upon and share our work, but only as long as they make it open source.  
+
+Other privacy-focused social media sites, such as [Friendica](https://github.com/friendica/friendica), [GNU Social](https://git.gnu.io/gnu/gnu-social/-/tree/master), and [Mastodon](https://github.com/tootsuite/mastodon) all use the AGPL-3.0, so there's strong precedence for this choice of license.
 
 ## How do you make money?
 
 We have the same business model as ProtonMail: we offer a paid tier with some additional features and customizability. The funds from the paid users help run server costs. As for our personnel, we are simply passionate about digital privacy and are not doing this for money.
+
+## Aren't there other competitors in this space?
+
+Yes; we've discussed some above. We believe more competition is better.
 
 ## How can I help?
 
