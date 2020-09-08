@@ -13,7 +13,10 @@
 <a href="https://www.codacy.com/manual/yrahul3910/social-media-website?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=yrahul3910/social-media-website&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/d755485ed3364e9ab0f9d174a4d9c2d3"/></a>
 <img src="https://img.shields.io/github/repo-size/yrahul3910/social-media-website" />
 <img src="https://img.shields.io/github/issues/yrahul3910/social-media-website" />
-</p> <hr />
+</p> 
+
+[![Promo video](http://img.youtube.com/vi/v51J-B5wSiE/0.jpg)](http://www.youtube.com/watch?v=v51J-B5wSiE "SE 2020: social.io")
+<hr />
 
 ## What is this?
 
