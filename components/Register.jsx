@@ -3,7 +3,7 @@ import {Redirect, Link} from 'react-router-dom';
 import Navbar from './Navbar.jsx';
 import PropTypes from 'prop-types';
 
-class Login extends React.Component {
+class Register extends React.Component {
     constructor(props) {
         super(props);
         this.state = {loggedIn: (this.props.user ? true : false)};
@@ -12,10 +12,11 @@ class Login extends React.Component {
         this.username = React.createRef();
         this.password = React.createRef();
         this.message = React.createRef();
+        this.name = React.createRef();
     }
 
     async click() {
-        const response = await fetch('http://localhost:8000/api/authenticate', {
+        const response = await fetch('http://localhost:8000/api/register', {
             method: "POST",
             mode: "cors",
             cache: "no-cache",
@@ -24,7 +25,8 @@ class Login extends React.Component {
             },
             body: JSON.stringify({
                 username: this.username.current.value,
-                password: this.password.current.value
+                password: this.password.current.value,
+                name: this.name.current.value
             })
         });
 
@@ -55,6 +57,9 @@ class Login extends React.Component {
                 <div className="row" style={{marginTop: '120px'}}>
                     <form className="col-3 col-gap-3">
                         <div className="row">
+                            <input ref={this.name} type="text" placeholder="Name" className="validate fill" />
+                        </div>
+                        <div className="row">
                             <input ref={this.username} type="text" placeholder="Username" className="validate fill" />
                         </div>
                         <div className="row">
@@ -76,9 +81,9 @@ class Login extends React.Component {
     }
 }
 
-Login.propTypes = {
+Register.propTypes = {
     toggleLogin: PropTypes.func.isRequired,
     user: PropTypes.object
 };
 
-export default Login;
+export default Register;

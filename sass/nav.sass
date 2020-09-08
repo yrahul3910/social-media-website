@@ -1,23 +1,13 @@
-.nav-menu-sticky
+%navigation-base
     background-color: white
     display: flex
 
-    @media screen and (min-width: 481px)
-        /* On higher-res devices, the menu can fit in the center
-           along the width of the device. */
-        justify-content: center
-    
     @media screen and (min-width: 320px) and (max-width: 480px)
-        /* Smaller devices need the menu to be vertical rather than
-            horizontal. */
         justify-content: flex-start
         flex-direction: column
 
     margin: 0
-    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25)
     position: sticky
-    padding-left: 0
-    top: 0
 
     &.expanded
         height: 50%
@@ -25,13 +15,10 @@
         li
             display: block
 
-            &:not(:first-child)
-                align-self: center
-    
     a
         color: $grey
         text-decoration: none !important
-    
+
     i
         color: $grey
 
@@ -40,16 +27,63 @@
         transition: color .5s ease
         list-style-type: none
 
-        &:hover
-            color: $red
-
         @media screen and (min-width: 481px)
             /* On larger devices, don't show the hamburger menu. */
             display: inline-block
 
             &#hamburger
                 display: none
+
+        @media screen and (min-width: 320px) and (max-width: 480px)
+            /* On smaller devices, show *only* the hamburger menu. */
+            display: none
+
+            &#hamburger
+                display: inline-block
+
+        margin: 0
+        cursor: pointer
+        padding: 10px 20px
+        border-radius: 4px
+
+    li
+        transition: background-color 0.5s ease-out
+
+        &:hover
+            background-color: rgba(0, 0, 0, 0.14)
             
+.sidebar
+    @extend %navigation-base
+
+    @media screen and (min-width: 481px)
+        justify-content: flex-start
+
+    border-right: 1px solid $grey
+    left: 0
+    padding-top: 0
+
+.nav-sticky
+    @extend %navigation-base
+
+    @media screen and (min-width: 481px)
+        /* On higher-res devices, the menu can fit in the center
+           along the width of the device. */
+        justify-content: space-between
+
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25)
+    padding-left: 0
+    top: 0
+
+    &.expanded
+        li
+            &:not(:first-child)
+                align-self: center
+    
+    li
+        &:hover
+            color: $red
+
+        @media screen and (min-width: 481px)
             /* The next two create the animation to show the bottom border
                from the middle, expanding outward, on hover.
                Source: https://stackoverflow.com/a/27164099 */
@@ -66,21 +100,5 @@
                 width: 100%
                 background: $red
 
-        @media screen and (min-width: 320px) and (max-width: 480px)
-            /* On smaller devices, show *only* the hamburger menu. */
-            display: none
-
-            &#hamburger
-                display: inline-block
-
-        margin: 0
-        cursor: pointer
-        padding: 10px 20px
-        border-radius: 4px
-        transition: background-color 0.5s ease-out
-
-        &:hover
-            background-color: rgba(0, 0, 0, 0.14)
-            
         a:hover
             text-decoration: none
