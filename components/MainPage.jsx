@@ -13,6 +13,14 @@ export default class MainPage extends React.Component {
         this.setState({text: 'Hello Universe!'});
     }
 
+    componentDidMount() {
+        // Get token by calling the /api/authenticate
+        
+        // Use the token to get all friends' posts
+        
+        // Add posts to state
+    }
+
     render() {
         return (
             <div>
