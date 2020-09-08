@@ -11,7 +11,7 @@ import webpack from 'webpack';
 import jwt from 'jsonwebtoken';
 import config from '../webpack.config.dev.js';
 import dbUtils from './db';
-import searchUtils from './search';
+//import searchUtils from './search';
 
 const port = 8000;
 const app = express();
@@ -80,7 +80,7 @@ app.post('/api/register', (req, res) => {
     res.writeHead(200, {'Content-Type': 'application/json'});
 
     let {username, password, name} = req.body;
-    
+
     // Check empty strings or null
     if (!username || !password || !name) {
         res.end(JSON.stringify({
