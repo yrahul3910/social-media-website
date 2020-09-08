@@ -11,7 +11,7 @@ import webpack from 'webpack';
 import jwt from 'jsonwebtoken';
 import config from '../webpack.config.dev.js';
 import dbUtils from './db';
-import searchUtils from './search';
+//import searchUtils from './search';
 
 const port = 8000;
 const app = express();
@@ -117,17 +117,47 @@ app.post('/api/register', (req, res) => {
 
         if (result.success) {
             let user = {username, password, name, dp: null};
-            let token = jwt.sign(user, process.env.SECRET, {
+            let token = jwt.sign(user, process.env.SESSION_SECRET, {
                 expiresIn: '1 day'
             });
 
             // Index to search
-            searchUtils.index('social.io', 'user', {name, username});
+            //searchUtils.index('social.io', 'user', {name, username});
 
             res.end(JSON.stringify({...result, token}));
         } else
             res.end(JSON.stringify(result));
     });
+});
+
+app.post('/api/feed', async (req, res) => {
+    res.writeHead(200, {'Content-Type': 'application/json'});
+
+
+    let {token} = req.body;
+
+    // Verify token
+    if (token) {
+        jwt.verify(token, process.env.SESSION_SECRET, async (err, decoded) => {
+            if (err) {
+                res.end({
+                    success: false,
+                    message: 'Invalid token'
+                });
+                return;
+            }
+
+            const {username} = decoded;
+            dbUtils.getFriendPosts(username, (err, posts) => {
+                if (err) {
+                    res.end(err);
+                    return;
+                }
+
+                res.end(JSON.stringify(posts));
+            });
+        });
+    }
 });
 
 app.listen(port, err => {

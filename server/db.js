@@ -43,7 +43,7 @@ exports.authenticate = (username, password, callback) => {
                     return;
                 }
                 
-                callback({success: true, results});
+                callback(null, {success: true, results});
             });
         });
 
@@ -60,6 +60,7 @@ exports.authenticate = (username, password, callback) => {
  * @param {Function} func - The callback function
  */
 exports.register = (username, password, name, callback) => {
+    console.log(uri);
     const client = new MongoClient(uri, { useNewUrlParser: true });
     client.connect(err => {
         if (err) throw err;
@@ -97,6 +98,52 @@ exports.register = (username, password, name, callback) => {
         });
     });
     client.close();
+};
+
+exports.getFriendPosts = async (username, callback) => {
+    const client = new MongoClient(uri, { useNewUrlParser: true });
+    client.connect(err => {
+        if (err) throw err;
+
+        let collection = client.db('db').collection('friends');
+        collection.find({
+            $or: [
+                {'user1': username},
+                {'user2': username}
+            ]
+        }, async (e, friends) => {
+            if (e) {
+                callback({
+                    success: false,
+                    message: 'Could not locate friends'
+                });
+                return;
+            }
+
+            let f = await friends.toArray()
+            let post_coll = client.db('db').collection('posts');
+            post_coll.find({
+                'username': {
+                    $ne: username,
+                    $in: f.map(x => x.user1).concat(
+                            f.map(x => x.user2))
+                }
+            }, async (e, posts) => {
+                if (e) {
+                    callback({
+                        success: false,
+                        message: 'Could not find posts'
+                    });
+                    return;
+                }
+
+                let postsArr = await posts.toArray();
+                console.log(postsArr);
+
+                callback(null, postsArr);
+            });
+        });
+    });
 };
 
 module.exports = exports;
