@@ -80,7 +80,7 @@ app.post('/api/register', (req, res) => {
     res.writeHead(200, {'Content-Type': 'application/json'});
 
     let {username, password, name} = req.body;
-    
+
     // Check empty strings or null
     if (!username || !password || !name) {
         res.end(JSON.stringify({

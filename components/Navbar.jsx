@@ -21,7 +21,11 @@ export default class Navbar extends React.Component {
                 </li>
                 <li><Link to="/">social.io</Link></li>
                 <li><input type="search" style={{width: '50vw'}} placeholder="Search" /></li>
-                <li><i className='fas fa-cog'></i> Settings</li> 
+                <li><i className='fas fa-cog'></i>
+                	<Link to="/setting">
+                    	{' Setting '}
+                    </Link>
+                </li>
             </ul>
         );
     }
