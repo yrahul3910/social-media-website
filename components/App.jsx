@@ -4,6 +4,7 @@ import MainPage from './MainPage.jsx';
 import Login from './Login.jsx';
 import Register from './Register.jsx';
 import SettingPage from './SettingPage.jsx';
+import Profile from './Profile.jsx';
 
 export default class App extends React.Component {
     constructor(props) {
@@ -31,6 +32,9 @@ export default class App extends React.Component {
                 }/>
                 <Route exact path='/settings' render={props =>
                     <SettingPage {...props} />
+                }/>
+                <Route exact path='/profile' render={props =>
+                    <Profile {...props} />
                 }/>
             </Switch>
         );
