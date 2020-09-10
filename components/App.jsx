@@ -3,7 +3,7 @@ import {Switch, Route} from 'react-router-dom';
 import MainPage from './MainPage.jsx';
 import Login from './Login.jsx';
 import Register from './Register.jsx';
-
+import SettingPage from './SettingPage.jsx';
 export default class App extends React.Component {
     render() {
         return (
@@ -16,6 +16,9 @@ export default class App extends React.Component {
                 }/>
                 <Route exact path='/register' render={props =>
                     <Register {...props} />
+                }/>
+                <Route exact path='/setting' render={props =>
+                    <SettingPage {...props} />
                 }/>
             </Switch>
         );
