@@ -16,11 +16,11 @@ class Login extends React.Component {
 
     async click() {
         const response = await fetch('http://localhost:8000/api/authenticate', {
-            method: "POST",
-            mode: "cors",
-            cache: "no-cache",
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
             headers: {
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 username: this.username.current.value,
@@ -31,9 +31,9 @@ class Login extends React.Component {
         const data = response.json();
         
         if (!data.success)
-            this.message.current.innerHTML = `<span style='color: red'>${data.message}</span>`;
+            this.message.current.innerHTML = '<span style=\'color: red\'>There was an error logging you in.</span>';
         else {
-            this.message.current.innerHTML = `<span style='color: green'>${data.message}</span>`;
+            this.message.current.innerHTML = '<span style=\'color: green\'>Success! Redirecting you now.</span>';
 
             localStorage.setItem('token', data.token);
             this.props.toggleLogin(data.user);

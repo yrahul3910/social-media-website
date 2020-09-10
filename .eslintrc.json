@@ -6,11 +6,11 @@
         "mocha": true
     },
     "extends": [
-		"eslint:recommended",
-		"plugin:react/recommended"
-	],
+    "eslint:recommended",
+    "plugin:react/recommended"
+  ],
     "parserOptions": {
-        "ecmaVersion": 7,
+        "ecmaVersion": 2018,
         "ecmaFeatures": {
             "experimentalObjectRestSpread": true,
             "jsx": true
@@ -34,6 +34,24 @@
             "error",
             "always"
         ],
-        "no-console": 0
+        "no-console": 0,
+        "block-scoped-var": "error",
+        "class-methods-use-this": "warning",
+        "default-case-last": "error",
+        "default-param-last": "error",
+        "curly": ["error", "multi-line"],
+        "eqeqeq": "error",
+        "guard-for-in": "error",
+        "no-alert": "error",
+        "no-multi-spaces": "error",
+        "no-return-await": "error",
+        "no-return-assign": "error",
+        "no-script-url": "error",
+        "no-self-assign": "error",
+        "no-self-compare": "error",
+        "wrap-iife": "error",
+        "yoda": "error",
+        "no-shadow": "warning",
+        "no-undef-init": "error"
     }
 }

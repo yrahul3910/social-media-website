@@ -17,11 +17,11 @@ class Register extends React.Component {
 
     async click() {
         const response = await fetch('http://localhost:8000/api/register', {
-            method: "POST",
-            mode: "cors",
-            cache: "no-cache",
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
             headers: {
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 username: this.username.current.value,
