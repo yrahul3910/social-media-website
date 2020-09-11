@@ -11,6 +11,7 @@
 <img src="https://img.shields.io/npm/dependency-version/react-router-dom/peer/react" />
 <img src="https://img.shields.io/github/license/yrahul3910/social-media-website" />
 <a href="https://www.codacy.com/manual/yrahul3910/social-media-website?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=yrahul3910/social-media-website&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/d755485ed3364e9ab0f9d174a4d9c2d3"/></a>
+<a href="https://github.com/yrahul3910/social-media-website/actions"><img src="https://github.com/yrahul3910/social-media-website/workflows/ESLint/badge.svg?branch=master" /></a>
 <img src="https://img.shields.io/github/repo-size/yrahul3910/social-media-website" />
 <img src="https://img.shields.io/github/issues/yrahul3910/social-media-website" />
 </p> 
