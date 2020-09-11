@@ -120,13 +120,12 @@ exports.getFriendPosts = async (username, callback) => {
                 return;
             }
 
-            let f = await friends.toArray()
+            let f = await friends.toArray();
             let post_coll = client.db('db').collection('posts');
             post_coll.find({
                 'username': {
-                    $ne: username,
                     $in: f.map(x => x.user1).concat(
-                            f.map(x => x.user2))
+                        f.map(x => x.user2))
                 }
             }, async (e, posts) => {
                 if (e) {

@@ -31,21 +31,36 @@ app.use(require('webpack-dev-middleware')(compiler, {
 
 const illegalCharsFormat = /[!@#$%^&*()+\-=[\]{};':"\\|,.<>/?]/;
 
+const logRequest = req => {
+    return (
+        'REQUEST from ' +
+        req.ip +
+        ' FORWARDED from ' + 
+        req.ips.toString() +
+        ' BODY ' +
+        req.body
+    );
+};
+
 app.get('/*', (req, res) => {
+    console.log(chalk.gray('INFO: ' + logRequest(req)));
     res.sendFile(path.join(__dirname, '../src/index.html'));
 });
 
 /* Authenticates the user. */
 app.post('/api/authenticate', (req, res) => {
+    console.log(chalk.gray('INFO: ' + logRequest(req)));
     res.writeHead(200, {'Content-Type': 'application/json'});
     let {username, password} = req.body;
 
     // Check for empty strings.
-    if (!username || !password)
+    if (!username || !password) {
+        console.log(chalk.yellow('WARN: Empty fields' + req));
         res.end(JSON.stringify({
             success: false,
             message: 'Fields cannot be empty'
         }));
+    }
     else {
         dbUtils.authenticate(username, password, (err, authResult) => {
             if (err) throw err;
@@ -68,10 +83,10 @@ app.post('/api/authenticate', (req, res) => {
                     token
                 }));
             } else
-                res.end(JSON.stringify({
-                    success: false,
-                    message: authResult.message
-                }));
+            {res.end(JSON.stringify({
+                success: false,
+                message: authResult.message
+            }));}
         });
     }
 });
@@ -126,7 +141,7 @@ app.post('/api/register', (req, res) => {
 
             res.end(JSON.stringify({...result, token}));
         } else
-            res.end(JSON.stringify(result));
+        {res.end(JSON.stringify(result));}
     });
 });
 
@@ -140,17 +155,17 @@ app.post('/api/feed', async (req, res) => {
     if (token) {
         jwt.verify(token, process.env.SESSION_SECRET, async (err, decoded) => {
             if (err) {
-                res.end({
+                res.end(JSON.stringify({
                     success: false,
                     message: 'Invalid token'
-                });
+                }));
                 return;
             }
 
             const {username} = decoded;
             dbUtils.getFriendPosts(username, (err, posts) => {
                 if (err) {
-                    res.end(err);
+                    res.end(JSON.stringify(err));
                     return;
                 }
 

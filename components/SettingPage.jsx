@@ -12,10 +12,9 @@ class SettingPage extends React.Component {
             preview: null,
             checked: false
         };
+        
         this.onCrop = this.onCrop.bind(this);
         this.onClose = this.onClose.bind(this);
-        this.click = this.click.bind(this);
-        this.click2 = this.click2.bind(this);
         this.handleChange = this.handleChange.bind(this);
 
         this.password = React.createRef();
@@ -46,7 +45,8 @@ class SettingPage extends React.Component {
                 password: this.password.current.value
             })
         });
-    }
+    } 
+
     async onUploadClick() {
         const response = await fetch('http://localhost:8000/api/profileImage', {
             method: 'POST',
@@ -63,7 +63,7 @@ class SettingPage extends React.Component {
         const data = response.json();
 
         if (!data.success)
-            this.message.current.innerHTML = `<span style='color: red'>${data.message}</span>`;
+        {this.message.current.innerHTML = `<span style='color: red'>${data.message}</span>`;}
         else {
             this.message.current.innerHTML = `<span style='color: green'>${data.message}</span>`;
 
