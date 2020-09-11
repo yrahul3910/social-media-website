@@ -8,6 +8,6 @@ jobs:
     - name: Install modules
       run: npm i
     - name: Install ESLint
-      run: npm i -g eslint
+      run: sudo npm i -g eslint
     - name: Run ESLint
       run: eslint . --fix --ext .js,.jsx
