@@ -103,7 +103,8 @@ class SettingPage extends React.Component {
                             <input type="password" style={{ width: '16vw' }} placeholder="new password" />
                         </div>
                         <div className="row" style={{ marginTop: '5px' }}>
-                            <button className="fill" onClick={this.onUpdateClick} style={{ width: '25%' }}> Update </button>
+                            <button className="fill" onClick={this.onUpdateClick}
+                                style={{ width: '25%' }}> Update </button>
                         </div>
                     </div>
                 </div>

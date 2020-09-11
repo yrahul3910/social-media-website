@@ -11,7 +11,7 @@ import webpack from 'webpack';
 import jwt from 'jsonwebtoken';
 import config from '../webpack.config.dev.js';
 import dbUtils from './db';
-//import searchUtils from './search';
+// Import searchUtils from './search';
 
 const port = 8000;
 const app = express();
@@ -21,9 +21,9 @@ dotenv.config();
 app.use(compression());
 app.use(helmet());
 app.use(bodyParser.json());
-app.use(bodyParser({extended: true}));
+app.use(bodyParser({ extended: true }));
 app.use(cors());
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(`${__dirname }/public`));
 app.use(require('webpack-dev-middleware')(compiler, {
     noInfo: true,
     publicPath: config.output.publicPath
@@ -31,31 +31,29 @@ app.use(require('webpack-dev-middleware')(compiler, {
 
 const illegalCharsFormat = /[!@#$%^&*()+\-=[\]{};':"\\|,.<>/?]/;
 
-const logRequest = req => {
-    return (
-        'REQUEST from ' +
-        req.ip +
-        ' FORWARDED from ' + 
-        req.ips.toString() +
-        ' BODY ' +
-        req.body
-    );
-};
+const logRequest = req => (
+    `REQUEST from ${
+        req.ip
+    } FORWARDED from ${
+        req.ips.toString()
+    } BODY ${
+        req.body}`
+);
 
 app.get('/*', (req, res) => {
-    console.log(chalk.gray('INFO: ' + logRequest(req)));
+    console.log(chalk.gray(`INFO: ${ logRequest(req)}`));
     res.sendFile(path.join(__dirname, '../src/index.html'));
 });
 
 /* Authenticates the user. */
 app.post('/api/authenticate', (req, res) => {
-    console.log(chalk.gray('INFO: ' + logRequest(req)));
-    res.writeHead(200, {'Content-Type': 'application/json'});
-    let {username, password} = req.body;
+    console.log(chalk.gray(`INFO: ${ logRequest(req)}`));
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    const { username, password } = req.body;
 
     // Check for empty strings.
     if (!username || !password) {
-        console.log(chalk.yellow('WARN: Empty fields' + req));
+        console.log(chalk.yellow(`WARN: Empty fields${ req}`));
         res.end(JSON.stringify({
             success: false,
             message: 'Fields cannot be empty'
@@ -66,15 +64,13 @@ app.post('/api/authenticate', (req, res) => {
             if (err) throw err;
 
             if (authResult.success) {
-                let user = {
+                const user = {
                     username: authResult.results.username,
                     name: authResult.results.name,
                     dp: authResult.results.dp
                 };
 
-                let token = jwt.sign(user, process.env.SESSION_SECRET, {
-                    expiresIn: '1 day'
-                });
+                const token = jwt.sign(user, process.env.SESSION_SECRET, { expiresIn: '1 day' });
 
                 res.end(JSON.stringify({
                     success: true,
@@ -82,19 +78,21 @@ app.post('/api/authenticate', (req, res) => {
                     user,
                     token
                 }));
-            } else
-            {res.end(JSON.stringify({
-                success: false,
-                message: authResult.message
-            }));}
+            }
+            else {
+                res.end(JSON.stringify({
+                    success: false,
+                    message: authResult.message
+                }));
+            }
         });
     }
 });
 
 app.post('/api/register', (req, res) => {
-    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.writeHead(200, { 'Content-Type': 'application/json' });
 
-    let {username, password, name} = req.body;
+    const { username, password, name } = req.body;
 
     // Check empty strings or null
     if (!username || !password || !name) {
@@ -131,29 +129,37 @@ app.post('/api/register', (req, res) => {
         }
 
         if (result.success) {
-            let user = {username, password, name, dp: null};
-            let token = jwt.sign(user, process.env.SESSION_SECRET, {
-                expiresIn: '1 day'
-            });
+            const user = {
+                username,
+                password,
+                name,
+                dp: null
+            };
+            const token = jwt.sign(user, process.env.SESSION_SECRET, { expiresIn: '1 day' });
 
-            // Index to search
-            //searchUtils.index('social.io', 'user', {name, username});
+            /*
+             * Index to search
+             *searchUtils.index('social.io', 'user', {name, username});
+             */
 
-            res.end(JSON.stringify({...result, token}));
-        } else
-        {res.end(JSON.stringify(result));}
+            res.end(JSON.stringify({
+                ...result,
+                token
+            }));
+        }
+        else {res.end(JSON.stringify(result));}
     });
 });
 
-app.post('/api/feed', async (req, res) => {
-    res.writeHead(200, {'Content-Type': 'application/json'});
+app.post('/api/feed', async(req, res) => {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
 
 
-    let {token} = req.body;
+    const { token } = req.body;
 
     // Verify token
     if (token) {
-        jwt.verify(token, process.env.SESSION_SECRET, async (err, decoded) => {
+        jwt.verify(token, process.env.SESSION_SECRET, async(err, decoded) => {
             if (err) {
                 res.end(JSON.stringify({
                     success: false,
@@ -162,10 +168,10 @@ app.post('/api/feed', async (req, res) => {
                 return;
             }
 
-            const {username} = decoded;
-            dbUtils.getFriendPosts(username, (err, posts) => {
-                if (err) {
-                    res.end(JSON.stringify(err));
+            const { username } = decoded;
+            dbUtils.getFriendPosts(username, (e, posts) => {
+                if (e) {
+                    res.end(JSON.stringify(e));
                     return;
                 }
 
@@ -177,6 +183,6 @@ app.post('/api/feed', async (req, res) => {
 
 app.listen(port, err => {
     if (err) throw err;
-    open('http://localhost:' + port);
-    chalk.green('Server is running at port ' + port);
+    open(`http://localhost:${ port}`);
+    chalk.green(`Server is running at port ${ port}`);
 });

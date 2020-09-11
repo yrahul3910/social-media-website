@@ -24,7 +24,6 @@
         "semi": ["error", "always"],
         "no-console": 0,
         "block-scoped-var": "error",
-        "class-methods-use-this": 1,
         "curly": ["error", "multi-line"],
         "eqeqeq": "error",
         "guard-for-in": "error",

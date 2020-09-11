@@ -16,13 +16,13 @@ class Login extends React.Component {
 
     async click() {
         const response = await fetch('http://localhost:8000/api/authenticate', {
-            method: 'POST'
-            , mode: 'cors'
-            , cache: 'no-cache'
-            , headers: { 'Content-Type': 'application/json' }
-            , body: JSON.stringify({
-                username: this.username.current.value
-                , password: this.password.current.value
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                username: this.username.current.value,
+                password: this.password.current.value
             })
         });
 
@@ -49,11 +49,13 @@ class Login extends React.Component {
         }
         return (
             <div>
-                <Navbar dp={this.props.user ? this.props.user.dp : 'http://localhost:8000/account_circle.png'} />
+                <Navbar dp={this.props.user ?
+                    this.props.user.dp :
+                    'http://localhost:8000/account_circle.png'} />
                 <div className="row center" style={{
-                    position: 'absolute'
-                    , top: '90px'
-                    , width: '25%'
+                    position: 'absolute',
+                    top: '90px',
+                    width: '25%'
                 }}>
                     <div ref={this.message}></div>
                 </div>
@@ -63,7 +65,8 @@ class Login extends React.Component {
                             <input ref={this.username} type="text" placeholder="Username" className="validate fill" />
                         </div>
                         <div className="row">
-                            <input ref={this.password} type="password" placeholder="Password" className="validate fill" />
+                            <input ref={this.password} type="password"
+                                placeholder="Password" className="validate fill" />
                         </div>
                         <div className="row">
                             <button className="fill" onClick={this.click}>Log in</button>
@@ -82,8 +85,8 @@ class Login extends React.Component {
 }
 
 Login.propTypes = {
-    toggleLogin: PropTypes.func.isRequired
-    , user: PropTypes.object
+    toggleLogin: PropTypes.func.isRequired,
+    user: PropTypes.object
 };
 
 export default Login;
