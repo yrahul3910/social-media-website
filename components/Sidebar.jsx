@@ -7,8 +7,7 @@ class Sidebar extends React.Component {
     }
 
     render() {
-        let children = this.props.children.map((x, i) =>
-            <li key={i}>{x}</li>
+        const children = this.props.children.map((x, i) => <li key={i}>{x}</li>
         );
 
         return (
@@ -22,8 +21,6 @@ class Sidebar extends React.Component {
     }
 }
 
-Sidebar.propTypes = {
-    children: PropTypes.array.isRequired
-};
+Sidebar.propTypes = { children: PropTypes.array.isRequired };
 
 export default Sidebar;

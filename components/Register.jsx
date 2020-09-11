@@ -1,12 +1,12 @@
 import React from 'react';
-import {Redirect, Link} from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import Navbar from './Navbar.jsx';
 import PropTypes from 'prop-types';
 
 class Register extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {loggedIn: (this.props.user ? true : false)};
+        this.state = { loggedIn: (!!this.props.user) };
         this.click = this.click.bind(this);
 
         this.username = React.createRef();
@@ -20,9 +20,7 @@ class Register extends React.Component {
             method: 'POST',
             mode: 'cors',
             cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 username: this.username.current.value,
                 password: this.password.current.value,
@@ -31,30 +29,36 @@ class Register extends React.Component {
         });
 
         const data = response.json();
-        
-        if (!data.success)
-            this.message.current.innerHTML = `<span style='color: red'>${data.message}</span>`;
+
+        if (!data.success) {this.message.current.innerHTML = `<span style='color: red'>${data.message}</span>`;}
         else {
             this.message.current.innerHTML = `<span style='color: green'>${data.message}</span>`;
 
             localStorage.setItem('token', data.token);
             this.props.toggleLogin(data.user);
-            this.setState({loggedIn: true});
+            this.setState({ loggedIn: true });
         }
     }
 
     render() {
-        if (this.state.loggedIn)
+        if (this.state.loggedIn) {
             return (
                 <Redirect to="/" />
             );
+        }
         return (
             <div>
-                <Navbar dp={this.props.user ? this.props.user.dp : 'http://localhost:8000/account_circle.png'} />
-                <div className="row center" style={{position: 'absolute', top: '90px', width: '25%'}}>
+                <Navbar dp={this.props.user ?
+                    this.props.user.dp :
+                    'http://localhost:8000/account_circle.png'} />
+                <div className="row center" style={{
+                    position: 'absolute',
+                    top: '90px',
+                    width: '25%'
+                }}>
                     <div ref={this.message}></div>
                 </div>
-                <div className="row" style={{marginTop: '120px'}}>
+                <div className="row" style={{ marginTop: '120px' }}>
                     <form className="col-3 col-gap-3">
                         <div className="row">
                             <input ref={this.name} type="text" placeholder="Name" className="validate fill" />
@@ -63,7 +67,8 @@ class Register extends React.Component {
                             <input ref={this.username} type="text" placeholder="Username" className="validate fill" />
                         </div>
                         <div className="row">
-                            <input ref={this.password} type="password" placeholder="Password" className="validate fill" />
+                            <input ref={this.password} type="password"
+                                placeholder="Password" className="validate fill" />
                         </div>
                         <div className="row">
                             <button className="fill" onClick={this.click}>Log in</button>

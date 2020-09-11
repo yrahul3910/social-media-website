@@ -12,21 +12,22 @@ class SettingPage extends React.Component {
             preview: null,
             checked: false
         };
-        
+
         this.onCrop = this.onCrop.bind(this);
         this.onClose = this.onClose.bind(this);
         this.handleChange = this.handleChange.bind(this);
 
         this.password = React.createRef();
+        this.message = React.createRef();
         this.setState.preview = React.createRef();
     }
 
     onClose() {
-        this.setState({preview: null});
+        this.setState({ preview: null });
     }
 
     onCrop(preview) {
-        this.setState({preview});
+        this.setState({ preview });
     }
 
     handleChange(checked) {
@@ -38,46 +39,45 @@ class SettingPage extends React.Component {
             method: 'PUT',
             mode: 'cors',
             cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                password: this.password.current.value
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: this.password.current.value })
         });
-    } 
+
+        if (!response.success) {
+            this.message.current.innerHTML =
+                '<p style=\'color: \'red\'>Failed to change password</p>';
+        }
+        else {this.message.current.innerHTML = '<p> style=\'color: \'green\'>Success!</p>';}
+    }
 
     async onUploadClick() {
         const response = await fetch('http://localhost:8000/api/profileImage', {
             method: 'POST',
             mode: 'cors',
             cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                profileImage: this.state.preview
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ profileImage: this.state.preview })
         });
 
         const data = response.json();
 
-        if (!data.success)
-        {this.message.current.innerHTML = `<span style='color: red'>${data.message}</span>`;}
+        if (!data.success) {this.message.current.innerHTML = `<span style='color: red'>${data.message}</span>`;}
         else {
             this.message.current.innerHTML = `<span style='color: green'>${data.message}</span>`;
 
             localStorage.setItem('token', data.token);
             this.props.toggleLogin(data.user);
-            this.setState({loggedIn: true});
+            this.setState({ loggedIn: true });
         }
     }
 
     render() {
         return (
             <div>
-                <Navbar dp={this.props.user ? this.props.user.dp : 'http://localhost:8000/account_circle.png'} />
-                <div className="row" style={{marginTop: '70px'}}>
+                <Navbar dp={this.props.user ?
+                    this.props.user.dp :
+                    'http://localhost:8000/account_circle.png'} />
+                <div className="row" style={{ marginTop: '70px' }}>
                     <div className="col-4 col-gap-8" >
                         <h2> Upload your profile image </h2>
                         <Avatar
@@ -87,7 +87,7 @@ class SettingPage extends React.Component {
                             onClose={this.onClose}
                         />
                         <img className="galimage" src={this.state.preview} alt="Preview" />
-                        <button className="fill" onClick={this.onUploadClick} style={{width: '25%'}}> Upload </button>
+                        <button className="fill" onClick={this.onUploadClick} style={{ width: '25%' }}> Upload </button>
                     </div>
                     <div className="col-4 col-gap-9" >
                         <h2> Make your profile public? </h2>
@@ -95,14 +95,15 @@ class SettingPage extends React.Component {
                             <Switch onChange={this.handleChange} checked={this.state.checked} />
                         </div>
                         <h2> Change your password </h2>
-                        <div className="row" style={{marginTop: '5px'}}>
-                            <input type="password" style={{width: '16vw'}} placeholder="old password" />
+                        <div className="row" ref={this.message}></div>
+                        <div className="row" style={{ marginTop: '5px' }}>
+                            <input type="password" style={{ width: '16vw' }} placeholder="old password" />
                         </div>
-                        <div className="row" style={{marginTop: '5px'}}>
-                            <input type="password" style={{width: '16vw'}} placeholder="new password" />
+                        <div className="row" style={{ marginTop: '5px' }}>
+                            <input type="password" style={{ width: '16vw' }} placeholder="new password" />
                         </div>
-                        <div className="row" style={{marginTop: '5px'}}>
-                            <button className="fill" onClick={this.onUpdateClick} style={{width: '25%'}}> Update </button>
+                        <div className="row" style={{ marginTop: '5px' }}>
+                            <button className="fill" onClick={this.onUpdateClick} style={{ width: '25%' }}> Update </button>
                         </div>
                     </div>
                 </div>
