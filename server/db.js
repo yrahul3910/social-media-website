@@ -125,6 +125,11 @@ exports.register = (username, pwd, name, callback) => {
     client.close();
 };
 
+/**
+ * Gets all the posts by the user's friends and the user himself.
+ * @param {string} username - Username decoded from token
+ * @param {Function} callback - A callback function.
+ */
 exports.getFriendPosts = async(username, callback) => {
     const client = new MongoClient(uri, { useNewUrlParser: true });
     client.connect(err => {
