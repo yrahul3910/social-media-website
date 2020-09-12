@@ -26,7 +26,7 @@ class Login extends React.Component {
             })
         });
 
-        const data = response.json();
+        const data = await response.json();
 
         if (!data.success) {
             this.message.current.innerHTML =
@@ -56,10 +56,9 @@ class Login extends React.Component {
                     position: 'absolute',
                     top: '90px',
                     width: '25%'
-                }}>
-                    <div ref={this.message}></div>
-                </div>
-                <div className="row" style={{ marginTop: '120px' }}>
+                }}></div>
+                <div className="row" ref={this.message} style={{ marginTop: '120px' }}></div>
+                <div className="row">
                     <form className="col-3 col-gap-3">
                         <div className="row">
                             <input ref={this.username} type="text" placeholder="Username" className="validate fill" />

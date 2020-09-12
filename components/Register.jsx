@@ -28,7 +28,7 @@ class Register extends React.Component {
             })
         });
 
-        const data = response.json();
+        const data = await response.json();
 
         if (!data.success) {this.message.current.innerHTML = `<span style='color: red'>${data.message}</span>`;}
         else {

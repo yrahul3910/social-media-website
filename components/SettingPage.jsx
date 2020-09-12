@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Navbar from './Navbar.jsx';
 import Avatar from 'react-avatar-edit';
 import Switch from 'react-switch';
+import { useAlert } from 'react-alert';
 
 
 class SettingPage extends React.Component {
@@ -43,7 +44,9 @@ class SettingPage extends React.Component {
             body: JSON.stringify({ password: this.password.current.value })
         });
 
-        if (!response.success) {
+        const body = await response.json();
+
+        if (!body.success) {
             this.message.current.innerHTML =
                 '<p style=\'color: \'red\'>Failed to change password</p>';
         }
@@ -51,6 +54,7 @@ class SettingPage extends React.Component {
     }
 
     async onUploadClick() {
+        const alert = useAlert();
         const response = await fetch('http://localhost:8000/api/profileImage', {
             method: 'POST',
             mode: 'cors',
@@ -59,16 +63,9 @@ class SettingPage extends React.Component {
             body: JSON.stringify({ profileImage: this.state.preview })
         });
 
-        const data = response.json();
-
-        if (!data.success) {this.message.current.innerHTML = `<span style='color: red'>${data.message}</span>`;}
-        else {
-            this.message.current.innerHTML = `<span style='color: green'>${data.message}</span>`;
-
-            localStorage.setItem('token', data.token);
-            this.props.toggleLogin(data.user);
-            this.setState({ loggedIn: true });
-        }
+        const body = await response.json();
+        if (!body.success) {alert.error('Failed to upload picture.');}
+        else {alert.success('Success!');}
     }
 
     render() {
@@ -114,10 +111,7 @@ class SettingPage extends React.Component {
     }
 }
 
-SettingPage.propTypes = {
-    toggleLogin: PropTypes.func.isRequired,
-    user: PropTypes.object.isRequired
-};
+SettingPage.propTypes = { user: PropTypes.object.isRequired };
 
 export default SettingPage;
 

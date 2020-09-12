@@ -5,10 +5,11 @@
   "description": "Privacy-focused social media site",
   "main": "index.js",
   "scripts": {
-    "start": "npm-run-all --parallel server lint:watch",
+    "start": "npm-run-all --parallel server lint:watch search",
     "server": "babel-node server/server.js",
     "lint": "esw webpack.config.* src build_scripts",
     "lint:watch": "npm run lint -- --watch",
+    "search": "elasticsearch",
     "clean-dist": "rimraf ./dist && mkdir dist"
   },
   "author": "Team 25",
@@ -21,6 +22,8 @@
     "mongodb": "^3.6.1",
     "owasp-password-strength-test": "^1.3.0",
     "profile-picture": "git+https://github.com/dsalvagni/react-profile-picture.git",
+    "react-alert": "^7.0.2",
+    "react-alert-template-basic": "^1.0.0",
     "react-avatar-edit": "^0.8.3",
     "react-switch": "^5.0.1",
     "regenerator-runtime": "^0.13.7"

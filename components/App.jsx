@@ -28,7 +28,7 @@ export default class App extends React.Component {
                 <Route exact path='/register' render={() => <Register user={this.state.user}
                     toggleLogin={this.toggleLogin} />
                 }/>
-                <Route exact path='/settings' render={props => <SettingPage {...props} />
+                <Route exact path='/settings' render={props => <SettingPage user={this.state.user} {...props} />
                 }/>
                 <Route exact path='/profile' render={props => <Profile {...props} />
                 }/>

@@ -62,3 +62,5 @@ class Profile extends React.Component {
 
 Profile.propTypes = { user: PropTypes.object };
 
+export default Profile;
+
