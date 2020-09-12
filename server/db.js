@@ -221,4 +221,44 @@ exports.updatePassword = async(username, pwd) => {
     });
 };
 
+/**
+ * Checks whether two users are friends.
+ * @param {string} user1 - Username of first user
+ * @param {string} user2 - Username of second user
+ */
+exports.areFriends = async(user1, user2) => {
+    const client = new MongoClient(uri, { useNewUrlParser: true });
+    client.connect(err => {
+        if (err) throw err;
+
+        const collection = client.db('db').collection('friends');
+        collection.find({
+            user1,
+            user2
+        }, async(e, friends) => {
+            if (e) {return false;}
+
+            const f = await friends.toArray();
+            return f.length > 0;
+        });
+    });
+};
+
+/**
+ * Gets the privacy mode of the user.
+ * @param {string} username - Username.
+ */
+exports.getPrivacyMode = async username => {
+    const client = new MongoClient(uri, { useNewUrlParser: true });
+    client.connect(async err => {
+        if (err) throw err;
+
+        const collection = client.db('db').collection('users');
+        const result = await collection.findOne({ username },
+            { 'grades.$': 1 });
+
+        return result;
+    });
+};
+
 module.exports = exports;

@@ -30,9 +30,10 @@ exports.deleteDoc = async(index, type, id) => {
 };
 
 // Search for documents
-exports.search = async(index, body) => {
+exports.search = async(index, type, body) => {
     const results = await esClient.search({
         index,
+        type,
         body
     });
     return results;
