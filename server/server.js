@@ -8,14 +8,20 @@ import cors from 'cors';
 import helmet from 'helmet';
 import bodyParser from 'body-parser';
 import webpack from 'webpack';
+import owasp from 'owasp-password-strength-test';
 import jwt from 'jsonwebtoken';
+
 import config from '../webpack.config.dev.js';
 import dbUtils from './db';
-import searchUtils from './search';
 
 const port = 8000;
 const app = express();
 const compiler = webpack(config);
+
+owasp.config({
+    allowPassphrases: true,
+    minLength: 8
+});
 
 dotenv.config();
 app.use(compression());
@@ -63,7 +69,7 @@ app.post('/api/authenticate', (req, res) => {
         dbUtils.authenticate(username, password, (err, authResult) => {
             if (err) {
                 console.log(chalk.red(`ERROR: ${err.message}`));
-                res.end({ success: false });
+                res.end(JSON.stringify({ success: false }));
                 return;
             }
 
@@ -132,6 +138,13 @@ app.post('/api/register', (req, res) => {
         return;
     }
 
+    // Check that the password is secure.
+    if (!owasp.test(password).strong) {
+        console.log(chalk.yellow('WARN: Password not secure.'));
+        res.end(JSON.stringify({ success: false }));
+        return;
+    }
+
     dbUtils.register(username, password, name, (err, result) => {
         if (err) {
             console.log(chalk.red(`ERROR: Database registration failed: ${err.message}`));
@@ -168,6 +181,13 @@ app.put('/api/authenticate', async(req, res) => {
 
     const { token, password } = req.body;
 
+    // Check that the password is secure.
+    if (!owasp.test(password).strong) {
+        console.log(chalk.yellow('WARN: Password not secure.'));
+        res.end(JSON.stringify({ success: false }));
+        return;
+    }
+
     // Verify token
     if (token) {
         jwt.verify(token, process.env.SESSION_SECRET, async(err, decoded) => {
@@ -182,19 +202,19 @@ app.put('/api/authenticate', async(req, res) => {
 
             if (result) {
                 console.log(chalk.green('INFO: Request successful.'));
-                res.end({ success: true });
+                res.end(JSON.stringify({ success: true }));
                 return;
             }
             else {
                 console.log(chalk.yellow('WARN: Failed to update password.'));
-                res.end({ success: false });
+                res.end(JSON.stringify({ success: false }));
                 return;
             }
         });
     }
     else {
         console.log(chalk.yellow('WARN: Empty token passed.'));
-        res.end({ success: false });
+        res.end(JSON.stringify({ success: false }));
         return;
     }
 });
@@ -222,19 +242,19 @@ app.post('/api/user/privacy', async(req, res) => {
 
             if (result) {
                 console.log(chalk.green('INFO: Request successful.'));
-                res.end({ success: true });
+                res.end(JSON.stringify({ success: true }));
                 return;
             }
             else {
                 console.log(chalk.yellow('WARN: Failed to update preferences.'));
-                res.end({ success: false });
+                res.end(JSON.stringify({ success: false }));
                 return;
             }
         });
     }
     else {
         console.log(console.warn('WARN: Empty token.'));
-        res.end({ success: false });
+        res.end(JSON.stringify({ success: false }));
         return;
     }
 });
@@ -272,7 +292,7 @@ app.post('/api/feed', async(req, res) => {
     }
     else {
         console.log(chalk.yellow('WARN: Empty token'));
-        res.end({ success: false });
+        res.end(JSON.stringify({ success: false }));
     }
 });
 
