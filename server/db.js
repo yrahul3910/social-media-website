@@ -1,6 +1,8 @@
 import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
+import chalk from 'chalk';
+import searchUtils from './search';
 
 dotenv.config();
 
@@ -167,6 +169,55 @@ exports.getFriendPosts = async(username, callback) => {
                 callback(null, postsArr);
             });
         });
+    });
+};
+
+/**
+ * Updates the user's privacy preferences.
+ * @param {string} username - Username.
+ * @param {string} to - Privacy setting to change to.
+ */
+exports.updatePrivacyPreferences = async(username, to) => {
+    if (to !== 'private' && to !== 'public' && to !== 'protected') {
+        console.log(chalk.warn(`ERROR: Invalid privacy value passed: ${to}`));
+        return false;
+    }
+
+    const client = new MongoClient(uri, { useNewUrlParser: true });
+    client.connect(async err => {
+        if (err) throw err;
+
+        const collection = client.db('db').collection('users');
+        const result = await collection.findOneAndUpdate({ username },
+            { privacy: to });
+
+        if (to !== 'private') {await searchUtils.index('social.io', 'users', { username });}
+        else {await searchUtils.deleteDoc('social.io', 'users', username);}
+
+        return result;
+    });
+};
+
+/**
+ * Updates a user's password.
+ * @param {string} username - The username.
+ * @param {string} pwd - Plain-text password.
+ */
+exports.updatePassword = async(username, pwd) => {
+    const client = new MongoClient(uri, { useNewUrlParser: true });
+    client.connect(async err => {
+        if (err) throw err;
+
+        const collection = client.db('db').collection('users');
+
+        const hash = await bcrypt.hash(pwd, 10);
+
+        if (!hash) return false;
+
+        const result = await collection.findOneAndUpdate({ username },
+            { password: hash });
+
+        return result;
     });
 };
 

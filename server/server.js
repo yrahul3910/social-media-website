@@ -11,7 +11,7 @@ import webpack from 'webpack';
 import jwt from 'jsonwebtoken';
 import config from '../webpack.config.dev.js';
 import dbUtils from './db';
-// Import searchUtils from './search';
+import searchUtils from './search';
 
 const port = 8000;
 const app = express();
@@ -63,7 +63,7 @@ app.post('/api/authenticate', (req, res) => {
         dbUtils.authenticate(username, password, (err, authResult) => {
             if (err) {
                 console.log(chalk.red(`ERROR: ${err.message}`));
-                res.end();
+                res.end({ success: false });
                 return;
             }
 
@@ -150,11 +150,6 @@ app.post('/api/register', (req, res) => {
 
             console.log(chalk.green('INFO: Request successful.'));
 
-            /*
-             * Index to search
-             *searchUtils.index('social.io', 'user', {name, username});
-             */
-
             res.end(JSON.stringify({
                 ...result,
                 token
@@ -165,6 +160,83 @@ app.post('/api/register', (req, res) => {
             res.end(JSON.stringify(result));
         }
     });
+});
+
+app.put('/api/authenticate', async(req, res) => {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    console.log(chalk.info(`INFO: ${logRequest(req)}`));
+
+    const { token, password } = req.body;
+
+    // Verify token
+    if (token) {
+        jwt.verify(token, process.env.SESSION_SECRET, async(err, decoded) => {
+            if (err) {
+                console.log(chalk.yellow('WARN: JWT verification failed.'));
+                res.end(JSON.stringify({ success: false }));
+                return;
+            }
+
+            const { username } = decoded;
+            const result = await dbUtils.updatePassword(username, password);
+
+            if (result) {
+                console.log(chalk.green('INFO: Request successful.'));
+                res.end({ success: true });
+                return;
+            }
+            else {
+                console.log(chalk.yellow('WARN: Failed to update password.'));
+                res.end({ success: false });
+                return;
+            }
+        });
+    }
+    else {
+        console.log(chalk.yellow('WARN: Empty token passed.'));
+        res.end({ success: false });
+        return;
+    }
+});
+
+app.post('/api/user/privacy', async(req, res) => {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    console.log(chalk.info(`INFO: ${logRequest(req)}`));
+
+    const { token, to } = req.body;
+
+    // Verify token
+    if (token) {
+        jwt.verify(token, process.env.SESSION_SECRET, async(err, decoded) => {
+            if (err) {
+                console.log(chalk.yellow('WARN: JWT verification failed.'));
+                res.end(JSON.stringify({
+                    success: false,
+                    message: 'Invalid token'
+                }));
+                return;
+            }
+
+            const { username } = decoded;
+            const result = await dbUtils.updatePrivacyPreferences(username, to);
+
+            if (result) {
+                console.log(chalk.green('INFO: Request successful.'));
+                res.end({ success: true });
+                return;
+            }
+            else {
+                console.log(chalk.yellow('WARN: Failed to update preferences.'));
+                res.end({ success: false });
+                return;
+            }
+        });
+    }
+    else {
+        console.log(console.warn('WARN: Empty token.'));
+        res.end({ success: false });
+        return;
+    }
 });
 
 app.post('/api/feed', async(req, res) => {
@@ -200,7 +272,7 @@ app.post('/api/feed', async(req, res) => {
     }
     else {
         console.log(chalk.yellow('WARN: Empty token'));
-        res.end();
+        res.end({ success: false });
     }
 });
 
