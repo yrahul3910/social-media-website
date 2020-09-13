@@ -32,7 +32,7 @@ To set this up on your local machine, follow the instructions below:
 
 ## FAQ
 
-All questions, and our API reference can be found on [the wiki](./wiki)
+All questions, and our API reference can be found on [the wiki](https://github.com/yrahul3910/social-media-website/wiki)
 
 ## Why AGPL?
 
