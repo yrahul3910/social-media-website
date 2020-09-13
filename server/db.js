@@ -1,6 +1,8 @@
-import {MongoClient} from 'mongodb';
+import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
+import chalk from 'chalk';
+import searchUtils from './search';
 
 dotenv.config();
 
@@ -15,15 +17,18 @@ const uri = `mongodb+srv://${user}:${password}@${hostname}/db?retryWrites=true&w
  * @param {string} pwd - The plaintext password entered
  * @param {Function} func - The callback function
  */
-exports.authenticate = (username, password, callback) => {
+exports.authenticate = (username, pwd, callback) => {
     const client = new MongoClient(uri, { useNewUrlParser: true });
     client.connect(err => {
         if (err) throw err;
 
         const collection = client.db('db').collection('users');
-        collection.findOne({username}, (err, results) => {
-            if (err) {
-                callback({success: false, message: 'Find failed.'});
+        collection.findOne({ username }, (findErr, results) => {
+            if (findErr) {
+                callback({
+                    success: false,
+                    message: 'Find failed.'
+                });
                 return;
             }
 
@@ -37,13 +42,19 @@ exports.authenticate = (username, password, callback) => {
             }
 
             // Check password
-            bcrypt.compare(password, results.password, (e, res) => {
+            bcrypt.compare(pwd, results.password, (e, res) => {
                 if (e || !res) {
-                    callback({success: false, message: 'Comparison failed'});
+                    callback({
+                        success: false,
+                        message: 'Comparison failed'
+                    });
                     return;
                 }
-                
-                callback(null, {success: true, results});
+
+                callback(null, {
+                    success: true,
+                    results
+                });
             });
         });
 
@@ -55,44 +66,62 @@ exports.authenticate = (username, password, callback) => {
  * Registers a user by adding the details to the users table. Also adds user to
  * subscriptions table, since by default, every user subscribes to him/herself.
  * @param {string} username - The username of the new user
- * @param {string} pwd - The plaintext password of the user. This will be hashed.
+ * @param {string} pwd - The plaintext password of a user. This will be hashed.
  * @param {string} name - The user's name
  * @param {Function} func - The callback function
  */
-exports.register = (username, password, name, callback) => {
+exports.register = (username, pwd, name, callback) => {
     console.log(uri);
     const client = new MongoClient(uri, { useNewUrlParser: true });
     client.connect(err => {
         if (err) throw err;
 
         const collection = client.db('db').collection('users');
-        collection.findOne({username}, (err, results) => {
-            if (err) {
-                callback({success: false, message: 'Could not find user.'});
+        collection.findOne({ username }, (e, results) => {
+            if (e) {
+                callback({
+                    success: false,
+                    message: 'Could not find user.'
+                });
                 return;
             }
 
             // If username exists, error
             if (results) {
-                callback({success: false, message: 'Username exists.'});
+                callback({
+                    success: false,
+                    message: 'Username exists.'
+                });
                 return;
             }
 
             // Hash the password
-            bcrypt.hash(password, 10, (e, hash) => {
-                if (e) {
-                    callback({success: false, message: 'Failed to hash password.'});
+            bcrypt.hash(pwd, 10, (hashErr, hash) => {
+                if (hashErr) {
+                    callback({
+                        success: false,
+                        message: 'Failed to hash password.'
+                    });
                     return;
                 }
 
                 // Insert into the database
-                collection.insertOne({username, password: hash, name}, e_ => {
+                collection.insertOne({
+                    username,
+                    password: hash,
+                    dp: null,
+                    privacy: 'private',
+                    name
+                }, e_ => {
                     if (e_) {
-                        callback({success: false, message: 'Failed to insert'});
+                        callback({
+                            success: false,
+                            message: 'Failed to insert'
+                        });
                         return;
                     }
 
-                    callback(null, {success: true});
+                    callback(null, { success: true });
                 });
             });
         });
@@ -100,18 +129,18 @@ exports.register = (username, password, name, callback) => {
     client.close();
 };
 
-exports.getFriendPosts = async (username, callback) => {
+/**
+ * Gets all the posts by the user's friends and the user himself.
+ * @param {string} username - Username decoded from token
+ * @param {Function} callback - A callback function.
+ */
+exports.getFriendPosts = async(username, callback) => {
     const client = new MongoClient(uri, { useNewUrlParser: true });
     client.connect(err => {
         if (err) throw err;
 
-        let collection = client.db('db').collection('friends');
-        collection.find({
-            $or: [
-                {'user1': username},
-                {'user2': username}
-            ]
-        }, async (e, friends) => {
+        const collection = client.db('db').collection('friends');
+        collection.find({ $or: [{ user1: username }, { user2: username }]}, async(e, friends) => {
             if (e) {
                 callback({
                     success: false,
@@ -120,16 +149,15 @@ exports.getFriendPosts = async (username, callback) => {
                 return;
             }
 
-            let f = await friends.toArray()
-            let post_coll = client.db('db').collection('posts');
+            const f = await friends.toArray();
+            const post_coll = client.db('db').collection('posts');
             post_coll.find({
-                'username': {
-                    $ne: username,
+                username: {
                     $in: f.map(x => x.user1).concat(
-                            f.map(x => x.user2))
+                        f.map(x => x.user2))
                 }
-            }, async (e, posts) => {
-                if (e) {
+            }, { _id: 0 }, async(postErr, posts) => {
+                if (postErr) {
                     callback({
                         success: false,
                         message: 'Could not find posts'
@@ -137,12 +165,107 @@ exports.getFriendPosts = async (username, callback) => {
                     return;
                 }
 
-                let postsArr = await posts.toArray();
+                const postsArr = await posts.toArray();
                 console.log(postsArr);
 
                 callback(null, postsArr);
             });
         });
+    });
+};
+
+/**
+ * Updates the user's privacy preferences.
+ * @param {string} username - Username.
+ * @param {string} to - Privacy setting to change to.
+ */
+exports.updatePrivacyPreferences = async(username, to) => {
+    if (to !== 'private' && to !== 'public' && to !== 'protected') {
+        console.log(chalk.warn(`ERROR: Invalid privacy value passed: ${to}`));
+        return false;
+    }
+
+    const client = new MongoClient(uri, { useNewUrlParser: true });
+    client.connect(async err => {
+        if (err) throw err;
+
+        const collection = client.db('db').collection('users');
+        const result = await collection.findOneAndUpdate({ username },
+            { privacy: to });
+
+        if (to !== 'private') {await searchUtils.index('social.io', 'users', { username });}
+        else {await searchUtils.deleteDoc('social.io', 'users', username);}
+
+        return result;
+    });
+};
+
+/**
+ * Updates a user's password.
+ * @param {string} username - The username.
+ * @param {string} pwd - Plain-text password.
+ */
+exports.updatePassword = async(username, pwd) => {
+    const client = new MongoClient(uri, { useNewUrlParser: true });
+    client.connect(async err => {
+        if (err) throw err;
+
+        const collection = client.db('db').collection('users');
+
+        const hash = await bcrypt.hash(pwd, 10);
+
+        if (!hash) return false;
+
+        const result = await collection.findOneAndUpdate({ username },
+            { password: hash });
+
+        return result;
+    });
+};
+
+/**
+ * Checks whether two users are friends.
+ * @param {string} user1 - Username of first user
+ * @param {string} user2 - Username of second user
+ */
+exports.areFriends = async(user1, user2) => {
+    const client = new MongoClient(uri, { useNewUrlParser: true });
+    client.connect(err => {
+        if (err) throw err;
+
+        const collection = client.db('db').collection('friends');
+        collection.find({
+            user1,
+            user2
+        }, async(e, friends) => {
+            if (e) {return false;}
+
+            const f = await friends.toArray();
+            return f.length > 0;
+        });
+    });
+};
+
+/**
+ * Gets the privacy mode of the user.
+ * @param {string} username - Username.
+ */
+exports.getPrivacyMode = async username => {
+    const client = new MongoClient(uri, { useNewUrlParser: true });
+    client.connect(async err => {
+        if (err) throw err;
+
+        const collection = client.db('db').collection('users');
+        const result = await collection.findOne({ username },
+            {
+                username: 0,
+                name: 0,
+                _id: 0,
+                dp: 0,
+                privacy: 1
+            });
+
+        return result;
     });
 };
 
