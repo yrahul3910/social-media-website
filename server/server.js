@@ -347,7 +347,10 @@ app.post('/api/feed', async(req, res) => {
                 }
 
                 console.log(chalk.green('INFO: Successful request'));
-                res.end(JSON.stringify(posts));
+                res.end(JSON.stringify({
+                    success: true,
+                    ...posts
+                }));
             });
         });
     }
