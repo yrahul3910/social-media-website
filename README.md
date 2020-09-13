@@ -3,6 +3,7 @@
 <a href="https://github.com/yrahul3910/social-media-site/blob/master/COPYING">license</a>  |
 <a href="https://github.com/yrahul3910/social-media-site/blob/master/CODE_OF_CONDUCT.md">contribute</a>  |
 <a href="https://github.com/yrahul3910/social-media-site/issues/">issues</a>  |
+<a href="https://github.com/yrahul3910/social-media-website/wiki">wiki</a>  |
 <a href="mailto:r.yedida@pm.me">contact</a><br />
 </center>
 <p>

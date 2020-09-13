@@ -109,6 +109,8 @@ exports.register = (username, pwd, name, callback) => {
                 collection.insertOne({
                     username,
                     password: hash,
+                    dp: null,
+                    privacy: 'private',
                     name
                 }, e_ => {
                     if (e_) {
