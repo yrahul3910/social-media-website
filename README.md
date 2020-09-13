@@ -21,6 +21,19 @@
 
 We are a social media website with a strong focus on privacy. All our code is fully open-source for review, and we do not sell any personal information.
 
+## Setup
+
+To set this up on your local machine, follow the instructions below:  
+* Install [Node.js](https://nodejs.org)
+* Install [Java](https://java.com)
+* Install [Elasticsearch](https://elastic.co)
+* Run `npm i` to install dependencies
+* Run `npm start` to run the code
+
+## FAQ
+
+All questions, and our API reference can be found on [the wiki](./wiki)
+
 ## Why AGPL?
 
 The AGPL is a strong copyleft license that prohibits large corporations from turning this into a closed-source, proprietary software. While it allows modifications, it expects them to also be open-source. This is in line with our ideals: we encourage others to build upon and share our work, but only as long as they make it open source.  
