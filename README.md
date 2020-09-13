@@ -7,15 +7,11 @@
 <a href="mailto:r.yedida@pm.me">contact</a><br />
 </center>
 <p>
-<img src="https://img.shields.io/npm/dependency-version/html-webpack-plugin/peer/webpack" />
-<img src="https://img.shields.io/npm/dependency-version/@babel/node/peer/@babel/core" />
-<img src="https://img.shields.io/npm/dependency-version/react-router-dom/peer/react" />
 <img src="https://img.shields.io/github/license/yrahul3910/social-media-website" />
 <a href="https://www.codacy.com/manual/yrahul3910/social-media-website?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=yrahul3910/social-media-website&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/d755485ed3364e9ab0f9d174a4d9c2d3"/></a>
 <a href="https://github.com/yrahul3910/social-media-website/actions"><img src="https://github.com/yrahul3910/social-media-website/workflows/ESLint/badge.svg?branch=master" /></a>
 <a href="https://github.com/yrahul3910/social-media-website/actions"><img src="https://github.com/yrahul3910/social-media-website/workflows/Test%20Suite/badge.svg" /></a>
 <img src="https://img.shields.io/github/repo-size/yrahul3910/social-media-website" />
-<img src="https://img.shields.io/github/issues/yrahul3910/social-media-website" />
 </p> 
 
 [![Promo video](http://img.youtube.com/vi/v51J-B5wSiE/0.jpg)](http://www.youtube.com/watch?v=v51J-B5wSiE "SE 2020: social.io")
