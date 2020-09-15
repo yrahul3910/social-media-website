@@ -6,9 +6,7 @@ export default {
     devtool: 'inline-source-map',
     mode: 'development',
     target: 'node',
-    entry: [
-        path.resolve(path.resolve(), 'src/index.js')
-    ],
+    entry: [path.resolve(path.resolve(), 'src/index.js')],
     output: {
         path: path.resolve(path.resolve(), 'src'),
         publicPath: '/',
@@ -28,9 +26,7 @@ export default {
                 exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',
-                    options: {
-                        presets: ['@babel/preset-env', '@babel/preset-react']
-                    }
+                    options: { presets: ['@babel/preset-env', '@babel/preset-react']}
                 }
             },
             {
@@ -38,9 +34,7 @@ export default {
                 exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',
-                    options: {
-                        presets: ['@babel/preset-env', '@babel/preset-react']
-                    }
+                    options: { presets: ['@babel/preset-env', '@babel/preset-react']}
                 }
             },
             {
@@ -52,21 +46,14 @@ export default {
                 test: /\.sass$/,
                 exclude: /node_modules/,
                 use: [
-                    {
-                        loader: MiniCssExtractPlugin.loader
-                    }, 
+                    { loader: MiniCssExtractPlugin.loader },
                     {
                         loader: 'css-loader',
-                        options: {
-                            importLoaders: 1
-                        }
+                        options: { importLoaders: 1 }
                     },
-                    {
-                        loader: 'postcss-loader'
-                    },
-                    {
-                        loader: 'sass-loader'
-                    }]
+                    { loader: 'postcss-loader' },
+                    { loader: 'sass-loader' }
+                ]
             }
         ]
     }

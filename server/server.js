@@ -322,7 +322,7 @@ app.post('/api/user/privacy', async(req, res) => {
 
 app.post('/api/feed', async(req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    console.log(chalk.info(`INFO: ${logRequest(req)}`));
+    console.log(chalk.gray(`INFO: ${logRequest(req)}`));
 
     const { token } = req.body;
 
