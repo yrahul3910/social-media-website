@@ -1,0 +1,13 @@
+name: ESLint
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install modules
+      run: npm i
+    - name: Install ESLint
+      run: sudo npm i -g eslint eslint-plugin-react
+    - name: Run ESLint
+      run: eslint . --fix --ext .js,.jsx
