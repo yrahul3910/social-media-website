@@ -325,7 +325,7 @@ app.post('/api/feed', async(req, res) => {
     console.log(chalk.gray(`INFO: ${logRequest(req)}`));
 
     const { token } = req.body;
-
+    console.log(token);
     // Verify token
     if (token) {
         jwt.verify(token, process.env.SESSION_SECRET, async(err, decoded) => {
