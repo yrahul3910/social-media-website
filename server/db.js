@@ -166,8 +166,6 @@ exports.getFriendPosts = async(username, callback) => {
                 }
 
                 const postsArr = await posts.toArray();
-                console.log(postsArr);
-
                 callback(null, postsArr);
             });
         });

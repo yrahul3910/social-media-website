@@ -81,7 +81,7 @@ app.post('/api/authenticate', (req, res) => {
                     dp: authResult.results.dp
                 };
 
-                const token = jwt.sign(user, process.env.SESSION_SECRET, { expiresIn: '1 day' });
+                const token = jwt.sign(user, process.env.SESSION_SECRET, { expiresIn: '3 days' });
 
                 console.log(chalk.green('INFO: Successful request'));
                 res.end(JSON.stringify({
@@ -330,6 +330,7 @@ app.post('/api/feed', async(req, res) => {
     if (token) {
         jwt.verify(token, process.env.SESSION_SECRET, async(err, decoded) => {
             if (err) {
+                console.log(err);
                 console.log(chalk.yellow('WARN: JWT verification failed.'));
                 res.end(JSON.stringify({
                     success: false,
@@ -349,7 +350,7 @@ app.post('/api/feed', async(req, res) => {
                 console.log(chalk.green('INFO: Successful request'));
                 res.end(JSON.stringify({
                     success: true,
-                    ...posts
+                    posts
                 }));
             });
         });
