@@ -21,11 +21,11 @@ export default {
         // Hash the files using MD5 so their names change when the content does
         new WebpackMd5Hash(),
 
-        // Use CommonsChunkPlugin to create a separate bundle
-        // of vendor libraries so they're cached separately.
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor'
-        }),
+        /*
+         * Use CommonsChunkPlugin to create a separate bundle
+         * of vendor libraries so they're cached separately.
+         */
+        new webpack.optimize.CommonsChunkPlugin({ name: 'vendor' }),
 
         new HtmlWebpackPlugin({
             template: 'src/index.html',
@@ -44,9 +44,7 @@ export default {
             inject: true
         }),
         // Minify JS
-        new webpack.optimize.UglifyJsPlugin({
-            sourceMap: true
-        })
+        new webpack.optimize.UglifyJsPlugin({ sourceMap: true })
     ],
     module: {
         rules: [
@@ -62,9 +60,7 @@ export default {
                 test: /\.jsx?$/,
                 use: {
                     loader: 'babel-loader',
-                    options: {
-                        presets: ['@babel/preset-env', '@babel/preset-react']
-                    }
+                    options: { presets: ['@babel/preset-env', '@babel/preset-react']}
                 }
             }
         ]
