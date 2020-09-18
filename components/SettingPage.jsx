@@ -142,9 +142,7 @@ class SettingPage extends React.Component {
 
         return (
             <div>
-                <Navbar dp={this.props.user ?
-                    this.props.user.dp :
-                    'http://localhost:8000/account_circle.png'} />
+                <Navbar user={this.props.user} />
                 <div className="row" style={{ marginTop: '70px' }}>
                     <div className="col-4 col-gap-8" >
                         <h2> Upload your profile image </h2>

@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import Post from './Post.jsx';
+import Navbar from './Navbar.jsx';
 
-export default class MainPage extends React.Component {
+class MainPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -44,10 +46,14 @@ export default class MainPage extends React.Component {
                 username={x.username} content={x.content} dp={x.pic} />) :
             null;
         return (
-            <div>
-                <h1><Link to="/login">Placeholder</Link></h1>
+            <main>
+                <Navbar user={this.props.user} />
                 {posts}
-            </div>
+            </main>
         );
     }
 }
+
+MainPage.propTypes = { user: PropTypes.object };
+
+export default MainPage;
