@@ -102,6 +102,46 @@ app.post('/api/authenticate', (req, res) => {
     }
 });
 
+app.post('/api/profileImage', async(req, res) => {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    console.log(chalk.gray(`INFO: ${logRequest(req)}`));
+
+	const { token, profileImage } = req.body;
+
+    // Verify token
+    if (token) {
+        jwt.verify(token, process.env.SESSION_SECRET, async(err, decoded) => {
+            if (err) {
+                console.log(chalk.yellow('WARN: JWT verification failed.'));
+                res.end(JSON.stringify({
+                    success: false,
+                    message: 'Invalid token'
+                }));
+                return;
+            }
+
+            const { username } = decoded;
+            const result = await dbUtils.uploadProfileImage(username, profileImage);
+
+            if (result) {
+                console.log(chalk.green('INFO: Request successful.'));
+                res.end(JSON.stringify({ success: true }));
+                return;
+            }
+            else {
+                console.log(chalk.yellow('WARN: Failed to update preferences.'));
+                res.end(JSON.stringify({ success: false }));
+                return;
+            }
+        });
+    }
+    else {
+        console.log(console.warn('WARN: Empty token.'));
+        res.end(JSON.stringify({ success: false }));
+        return;
+    }
+});
+
 app.post('/api/register', (req, res) => {
     console.log(chalk.gray(`INFO: ${logRequest(req)}`));
     res.writeHead(200, { 'Content-Type': 'application/json' });

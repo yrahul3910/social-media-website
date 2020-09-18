@@ -27,7 +27,7 @@ export default class Navbar extends React.Component {
                     </Link>
                 </li>
                 <li><i className='fas fa-cog'></i>
-                    <Link to="/setting">
+                    <Link to="/settings">
                         {' Setting '}
                     </Link>
                 </li>

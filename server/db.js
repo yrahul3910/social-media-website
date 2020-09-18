@@ -111,6 +111,7 @@ exports.register = (username, pwd, name, callback) => {
                     password: hash,
                     dp: null,
                     privacy: 'private',
+                    profileImage: null,
                     name
                 }, e_ => {
                     if (e_) {
@@ -129,6 +130,19 @@ exports.register = (username, pwd, name, callback) => {
     client.close();
 };
 
+exports.uploadProfileImage = async(username, profileImage) => {
+    const client = new MongoClient(uri, { useNewUrlParser: true });
+    client.connect(async err => {
+        if (err) throw err;
+
+        const collection = client.db('db').collection('users');
+
+        const result = await collection.findOneAndUpdate({ username },
+            { profileImage: profileImage });
+
+        return result;
+    });
+}
 /**
  * Gets all the posts by the user's friends and the user himself.
  * @param {string} username - Username decoded from token
