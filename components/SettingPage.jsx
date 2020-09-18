@@ -141,7 +141,7 @@ class SettingPage extends React.Component {
         if (!this.state.loggedIn) {return <Redirect to='/login' />;}
 
         return (
-            <div>
+            <main>
                 <Navbar user={this.props.user} />
                 <div className="row" style={{ marginTop: '70px' }}>
                     <div className="col-4 col-gap-8" >
@@ -188,7 +188,7 @@ class SettingPage extends React.Component {
                         </div>
                     </div>
                 </div>
-            </div>
+            </main>
         );
     }
 }

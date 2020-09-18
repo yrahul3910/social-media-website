@@ -138,9 +138,47 @@ app.post('/api/profileImage', async(req, res) => {
         });
     }
     else {
-        console.log(console.warn('WARN: Empty token.'));
+        console.log(chalk.yellow('WARN: Empty token.'));
         res.end(JSON.stringify({ success: false }));
         return;
+    }
+});
+
+app.post('/api/user/posts', async(req, res) => {
+    console.log(chalk.gray(`INFO: ${logRequest(req)}`));
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+
+    const { token } = req.body;
+
+    if (token) {
+        jwt.verify(token, process.env.SESSION_SECRET, async(err, decoded) => {
+            if (err) {
+                console.log(chalk.yellow('WARN: JWT verification failed.'));
+                res.end(JSON.stringify({
+                    success: false,
+                    message: 'Invalid token'
+                }));
+                return;
+            }
+
+            const { username } = decoded;
+            const results = await dbUtils.getPostsByUser(username);
+
+            if (!results) {
+                res.end(JSON.stringify({ success: false }));
+                return;
+            }
+
+            console.log(chalk.green('INFO: Successful request'));
+            res.end(JSON.stringify({
+                success: true,
+                posts: results
+            }));
+        });
+    }
+    else {
+        console.log(chalk.yellow('WARN: Empty token.'));
+        res.end(JSON.stringify({ success: false }));
     }
 });
 
@@ -351,7 +389,7 @@ app.post('/api/user/delete', async(req, res) => {
         });
     }
     else {
-        console.log(console.warn('WARN: Empty token.'));
+        console.log(chalk.yellow('WARN: Empty token.'));
         res.end(JSON.stringify({ success: false }));
         return;
     }
@@ -391,7 +429,7 @@ app.post('/api/user/privacy', async(req, res) => {
         });
     }
     else {
-        console.log(console.warn('WARN: Empty token.'));
+        console.log(chalk.yellow('WARN: Empty token.'));
         res.end(JSON.stringify({ success: false }));
         return;
     }

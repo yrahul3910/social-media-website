@@ -20,7 +20,13 @@ class Post extends React.Component {
                     <img src={this.props.dp} />
                     <div className='poster-details'>
                         <span className='poster-name'>{this.props.name}</span>
-                        <span className='poster-username'>@{this.props.username}</span>
+                        <span className='poster-username'>
+                            <a href={this.props.username === this.props.currentUsername ?
+                                '/profile' :
+                                `/user/${this.props.username}`}>
+                                @{this.props.username}
+                            </a>
+                        </span>
                     </div>
                 </div>
                 <div className='post-body'>
@@ -35,7 +41,8 @@ Post.propTypes = {
     name: PropTypes.string.isRequired,
     username: PropTypes.string.isRequired,
     content: PropTypes.string.isRequired,
-    dp: PropTypes.string
+    dp: PropTypes.string,
+    currentUsername: PropTypes.string.isRequired
 };
 
 export default Post;

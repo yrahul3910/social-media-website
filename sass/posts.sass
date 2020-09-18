@@ -2,6 +2,9 @@
     box-shadow: 3px 4px 5px $grey;
     margin: 40px
 
+    *
+        color: unset
+
     &.collapsed .post-body
         display: none
 
@@ -13,7 +16,7 @@
         img
             width: 40px
             border-radius: 50%
-            object-fill: contain
+            object-fit: contain
             margin: 5px 10px
 
         .poster-details
@@ -22,12 +25,15 @@
             justify-content: center
 
             .poster-name
+                color: black
                 font-weight: bold
 
-            .poster-username
-                color: $grey
-                font-size: .8em
-                font-weight: lighter
-
     .post-body
-        padding: 10px
+        color: black
+        padding: 10px 10px 20px 10px
+
+.poster-username
+    color: $grey
+    font-size: .8em
+    font-weight: lighter
+

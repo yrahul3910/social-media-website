@@ -132,7 +132,7 @@ exports.register = (username, pwd, name, callback) => {
 
 exports.uploadProfileImage = async(username, profileImage) => {
     const client = new MongoClient(uri, { useNewUrlParser: true });
-    client.connect(async err => {
+    const result = await client.connect(async err => {
         if (err) throw err;
 
         const collection = client.db('db').collection('users');
@@ -142,7 +142,26 @@ exports.uploadProfileImage = async(username, profileImage) => {
 
         return result;
     });
+
+    return result;
 };
+
+/**
+ * Gets all posts by a user.
+ * @param {string} username - The username.
+ */
+exports.getPostsByUser = async username => {
+    const client = new MongoClient(uri, { useNewUrlParser: true });
+    await client.connect();
+    const collection = client.db('db').collection('posts');
+    const posts = collection.find({ username });
+
+    if (!posts) return null;
+
+    const result = await posts.toArray();
+    return result;
+};
+
 /**
  * Gets all the posts by the user's friends and the user himself.
  * @param {string} username - Username decoded from token
@@ -265,21 +284,19 @@ exports.areFriends = async(user1, user2) => {
  */
 exports.getPrivacyMode = async username => {
     const client = new MongoClient(uri, { useNewUrlParser: true });
-    client.connect(async err => {
-        if (err) throw err;
+    await client.connect();
+    const collection = client.db('db').collection('users');
 
-        const collection = client.db('db').collection('users');
-        const result = await collection.findOne({ username },
-            {
-                username: 0,
-                name: 0,
-                _id: 0,
-                dp: 0,
-                privacy: 1
-            });
+    const result = await collection.findOne({ username },
+        {
+            username: 0,
+            name: 0,
+            _id: 0,
+            dp: 0,
+            privacy: 1
+        });
 
-        return result;
-    });
+    return result;
 };
 
 /**

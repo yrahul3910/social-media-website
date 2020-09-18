@@ -44,7 +44,8 @@ export default class App extends React.Component {
                 }/>
                 <Route exact path='/settings' render={props => <SettingPage user={this.state.user} {...props} />
                 }/>
-                <Route exact path='/profile' render={props => <Profile {...props} />
+                <Route exact path='/profile' render={props => <Profile user={this.state.user}
+                    toggleLogin={this.toggleLogin} {...props} />
                 }/>
             </Switch>
         );
