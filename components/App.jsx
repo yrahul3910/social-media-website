@@ -14,6 +14,20 @@ export default class App extends React.Component {
         this.toggleLogin = this.toggleLogin.bind(this);
     }
 
+    async componentDidMount() {
+        if (!localStorage.getItem('token')) return;
+
+        const response = await fetch('/api/user/info', {
+            method: 'POST',
+            mode: 'cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: localStorage.getItem('token') })
+        });
+        const data = await response.json();
+
+        if (data.success) {this.setState({ user: data.user });}
+    }
+
     toggleLogin(user) {
         this.setState({ user });
     }

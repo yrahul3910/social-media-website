@@ -395,6 +395,42 @@ app.post('/api/user/privacy', async(req, res) => {
     }
 });
 
+app.post('/api/user/info', async(req, res) => {
+    console.log(chalk.gray(`INFO: ${logRequest(req)}`));
+
+    const { token } = req.body;
+    if (token) {
+        jwt.verify(token, process.env.SESSION_SECRET, async(err, decoded) => {
+            if (err) {
+                console.log(err);
+                console.log(chalk.yellow('WARN: JWT verification failed.'));
+                res.end(JSON.stringify({
+                    success: false,
+                    message: 'Invalid token'
+                }));
+                return;
+            }
+
+            const { username } = decoded;
+            const details = await dbUtils.getUserDetails(username);
+            console.log(`got ${ details}`);
+
+            if (details) {
+                console.log(chalk.green('INFO: Successful request'));
+                res.end(JSON.stringify({
+                    success: true,
+                    user: details
+                }));
+            }
+            else {res.end(JSON.stringify({ success: false }));}
+        });
+    }
+    else {
+        console.log(chalk.yellow('WARN: Empty token'));
+        res.end(JSON.stringify({ success: false }));
+    }
+});
+
 app.post('/api/user/data', (req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     console.log(chalk.gray(`INFO: ${logRequest(req)}`));

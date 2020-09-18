@@ -298,4 +298,20 @@ exports.deleteUser = async username => {
     });
 };
 
+/**
+ * Fetches user details.
+ * @param {string} username - The username
+ */
+exports.getUserDetails = async username => {
+    const client = new MongoClient(uri, { useNewUrlParser: true });
+    client.connect(async err => {
+        if (err) throw err;
+
+        const collection = client.db('db').collection('users');
+        const result = await collection.findOne({ username });
+
+        return result;
+    });
+};
+
 module.exports = exports;
