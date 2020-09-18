@@ -3,6 +3,7 @@ import { Redirect, Link } from 'react-router-dom';
 import Navbar from './Navbar.jsx';
 import PropTypes from 'prop-types';
 
+const illegalCharsFormat = /[!@#$%^&*()+\-=[\]{};':"\\|,.<>/?]/;
 class Register extends React.Component {
     constructor(props) {
         super(props);
@@ -16,6 +17,11 @@ class Register extends React.Component {
     }
 
     async click() {
+        if (!this.username.current.value ||
+            !this.password.current.value ||
+            !this.name.current.value ||
+            illegalCharsFormat.test(this.username.current.value)) return;
+
         const response = await fetch('http://localhost:8000/api/register', {
             method: 'POST',
             mode: 'cors',

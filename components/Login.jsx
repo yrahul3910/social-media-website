@@ -3,6 +3,7 @@ import { Redirect, Link } from 'react-router-dom';
 import Navbar from './Navbar.jsx';
 import PropTypes from 'prop-types';
 
+const illegalCharsFormat = /[!@#$%^&*()+\-=[\]{};':"\\|,.<>/?]/;
 class Login extends React.Component {
     constructor(props) {
         super(props);
@@ -15,6 +16,11 @@ class Login extends React.Component {
     }
 
     async click() {
+        if (!this.username.current.value ||
+            !this.password.current.value ||
+            illegalCharsFormat.test(this.username.current.value)) return;
+
+
         const response = await fetch('http://localhost:8000/api/authenticate', {
             method: 'POST',
             mode: 'cors',
