@@ -3,14 +3,15 @@ import PropTypes from 'prop-types';
 import Navbar from './Navbar.jsx';
 import Avatar from 'react-avatar-edit';
 import Switch from 'react-switch';
-import { useAlert } from 'react-alert';
-const owasp = require("owasp-password-strength-test");
+import { withAlert } from 'react-alert';
+import { Redirect } from 'react-router-dom';
+const owasp = require('owasp-password-strength-test');
 
 class SettingPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-        	loggedIn: true,
+            loggedIn: true,
             preview: null,
             checked: false
         };
@@ -42,6 +43,11 @@ class SettingPage extends React.Component {
     }
 
     async onUpdateClick() {
+        const result = owasp.test(this.password.current.value);
+        if (!result.strong) {
+            this.props.alert.error(result.errors.join('\n'));
+            return;
+        }
 
         const response = await fetch('http://localhost:8000/api/authenticate', {
             method: 'PUT',
@@ -61,7 +67,6 @@ class SettingPage extends React.Component {
     }
 
     async onUploadClick() {
-        const alert = useAlert();
         const response = await fetch('http://localhost:8000/api/profileImage', {
             method: 'POST',
             mode: 'cors',
@@ -72,41 +77,45 @@ class SettingPage extends React.Component {
 
         const body = await response.json();
         if (!body.success) {alert.error('Failed to upload picture.');}
-        else {alert.success('Success!');}
+        else {this.props.alert.success('Success!');}
     }
 
     async onDeleteClick() {
-        const alert = useAlert();
-        const response = await fetch('http://localhost:8000/api/user', {
+        const response = await fetch('http://localhost:8000/api/user/delete', {
             method: 'POST',
             mode: 'cors',
             cache: 'no-cache',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ profileImage: this.state.preview })
+            body: JSON.stringify({ token: localStorage.getItem('token') })
         });
 
         const body = await response.json();
         if (!body.success) {alert.error('Failed to delete the account.');}
-        else {alert.success('Done, see you again!');}
+        else {
+            localStorage.removeItem('token');
+            this.props.alert.success('Your account has been deleted');
+        }
     }
 
     async onDownloadClick() {
-        const alert = useAlert();
-        const response = await fetch('http://localhost:8000/api/dataDownload', {
+        const response = await fetch('http://localhost:8000/api/user/data', {
             method: 'POST',
             mode: 'cors',
             cache: 'no-cache',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ profileImage: this.state.preview })
+            body: JSON.stringify({ token: localStorage.getItem('token') })
         });
 
         const body = await response.json();
-        if (!body.success) {alert.error('Failed to download the data.');}
-        else {alert.success('download Success!');}
+        if (!body.success) {alert.error('Failed to submit a data request.');}
+        else {
+            this.props.alert.success('A request for a copy of your data has been ' +
+                'successfully submitted. You will receive an email when the data is ready.');
+        }
     }
 
     render() {
-    	if (!this.state.loggedIn) {return <Redirect to='/login' />;}
+        if (!this.state.loggedIn) {return <Redirect to='/login' />;}
 
         return (
             <div>
@@ -149,7 +158,7 @@ class SettingPage extends React.Component {
                         </div>
                         <div className="row" style={{ marginTop: '10px' }}>
                             <button className="fill" onClick={this.onDownloadClick}
-                                style={{ width: '50%' }}> download personal data </button>
+                                style={{ width: '50%' }}> Request a copy of my data </button>
                         </div>
                     </div>
                 </div>
@@ -158,7 +167,10 @@ class SettingPage extends React.Component {
     }
 }
 
-SettingPage.propTypes = { user: PropTypes.object.isRequired };
+SettingPage.propTypes = {
+    user: PropTypes.object.isRequired,
+    alert: PropTypes.object
+};
 
-export default SettingPage;
+export default withAlert()(SettingPage);
 

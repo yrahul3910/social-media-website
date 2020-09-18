@@ -138,11 +138,11 @@ exports.uploadProfileImage = async(username, profileImage) => {
         const collection = client.db('db').collection('users');
 
         const result = await collection.findOneAndUpdate({ username },
-            { profileImage: profileImage });
+            { profileImage });
 
         return result;
     });
-}
+};
 /**
  * Gets all the posts by the user's friends and the user himself.
  * @param {string} username - Username decoded from token
@@ -278,6 +278,22 @@ exports.getPrivacyMode = async username => {
             });
 
         return result;
+    });
+};
+
+/**
+ * Deletes a user from the database.
+ * @param {string} username - The username of the user to delete.
+ */
+exports.deleteUser = async username => {
+    const client = new MongoClient(uri, { useNewUrlParser: true });
+    client.connect(async err => {
+        if (err) throw err;
+
+        const collection = client.db('db').collection('users');
+        const result = await collection.deleteOne({ username });
+
+        return { success: result.acknowledged };
     });
 };
 
