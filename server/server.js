@@ -39,7 +39,9 @@ app.use(require('webpack-dev-middleware')(compiler, {
 const illegalCharsFormat = /[!@#$%^&*()+\-=[\]{};':"\\|,.<>/?]/;
 
 const logRequest = req => (
-    `REQUEST from ${
+    `REQUEST at ${
+        req.url
+    } from ${
         req.ip
     } FORWARDED from ${
         req.ips.toString()
@@ -413,7 +415,6 @@ app.post('/api/user/info', async(req, res) => {
 
             const { username } = decoded;
             const details = await dbUtils.getUserDetails(username);
-            console.log(`got ${ details}`);
 
             if (details) {
                 console.log(chalk.green('INFO: Successful request'));

@@ -304,14 +304,18 @@ exports.deleteUser = async username => {
  */
 exports.getUserDetails = async username => {
     const client = new MongoClient(uri, { useNewUrlParser: true });
-    client.connect(async err => {
-        if (err) throw err;
-
-        const collection = client.db('db').collection('users');
-        const result = await collection.findOne({ username });
-
-        return result;
+    await client.connect();
+    const collection = client.db('db').collection('users');
+    const result = await collection.findOne({ username }, {
+        projection: {
+            _id: 0,
+            username: 1,
+            name: 1,
+            privacy: 1
+        }
     });
+
+    return result;
 };
 
 module.exports = exports;
