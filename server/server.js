@@ -44,7 +44,7 @@ const logRequest = req => (
     } FORWARDED from ${
         req.ips.toString()
     } BODY ${
-        req.body}`
+        JSON.stringify(req.body)}`
 );
 
 app.get('/*', (req, res) => {
@@ -218,7 +218,7 @@ app.post('/api/register', (req, res) => {
 
 app.put('/api/authenticate', async(req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    console.log(chalk.info(`INFO: ${logRequest(req)}`));
+    console.log(chalk.gray(`INFO: ${logRequest(req)}`));
 
     const { token, password } = req.body;
 
@@ -262,7 +262,7 @@ app.put('/api/authenticate', async(req, res) => {
 
 app.post('/api/search', async(req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    console.log(chalk.info(`INFO: ${logRequest(req)}`));
+    console.log(chalk.gray(`INFO: ${logRequest(req)}`));
 
     const { token, query } = req.body;
 
@@ -322,7 +322,7 @@ app.post('/api/search', async(req, res) => {
 
 app.post('/api/user/delete', async(req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    console.log(chalk.info(`INFO: ${logRequest(req)}`));
+    console.log(chalk.gray(`INFO: ${logRequest(req)}`));
 
     const { token } = req.body;
 
@@ -357,7 +357,7 @@ app.post('/api/user/delete', async(req, res) => {
 
 app.post('/api/user/privacy', async(req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    console.log(chalk.info(`INFO: ${logRequest(req)}`));
+    console.log(chalk.gray(`INFO: ${logRequest(req)}`));
 
     const { token, to } = req.body;
 
@@ -376,7 +376,7 @@ app.post('/api/user/privacy', async(req, res) => {
             const { username } = decoded;
             const result = await dbUtils.updatePrivacyPreferences(username, to);
 
-            if (result) {
+            if (result.success) {
                 console.log(chalk.green('INFO: Request successful.'));
                 res.end(JSON.stringify({ success: true }));
                 return;

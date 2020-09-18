@@ -202,13 +202,14 @@ exports.updatePrivacyPreferences = async(username, to) => {
         if (err) throw err;
 
         const collection = client.db('db').collection('users');
-        const result = await collection.findOneAndUpdate({ username },
-            { privacy: to });
+        await collection.findOneAndUpdate({ username },
+            { $set: { privacy: to } },
+            { returnNewDocument: false });
 
         if (to !== 'private') {await searchUtils.index('social.io', 'users', { username });}
         else {await searchUtils.deleteDoc('social.io', 'users', username);}
 
-        return result;
+        return { success: true };
     });
 };
 
@@ -229,7 +230,7 @@ exports.updatePassword = async(username, pwd) => {
         if (!hash) return false;
 
         const result = await collection.findOneAndUpdate({ username },
-            { password: hash });
+            { $set: { password: hash } });
 
         return result;
     });

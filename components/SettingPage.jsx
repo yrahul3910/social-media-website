@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Navbar from './Navbar.jsx';
 import Avatar from 'react-avatar-edit';
-import Switch from 'react-switch';
 import { withAlert } from 'react-alert';
 import { Redirect } from 'react-router-dom';
 const owasp = require('owasp-password-strength-test');
@@ -24,10 +23,13 @@ class SettingPage extends React.Component {
         this.onUploadClick = this.onUploadClick.bind(this);
         this.onDeleteClick = this.onDeleteClick.bind(this);
         this.onDownloadClick = this.onDownloadClick.bind(this);
+        this.onPrivacyChange = this.onPrivacyChange.bind(this);
 
-        this.password = React.createRef();
+        this.newPassword = React.createRef();
+        this.newPasswordVerify = React.createRef();
         this.message = React.createRef();
         this.setState.preview = React.createRef();
+        this.privacy = React.createRef();
     }
 
     onClose() {
@@ -42,19 +44,40 @@ class SettingPage extends React.Component {
         this.setState({ checked });
     }
 
+    async onPrivacyChange() {
+        const response = await fetch('/api/user/privacy', {
+            method: 'POST',
+            mode: 'cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                token: localStorage.getItem('token'),
+                to: this.privacy.current.value.split(' (')[0].toLowerCase()
+            })
+        });
+
+        const data = await response.json();
+        if (data.success) {this.props.alert.success('Successfully changed!');}
+        else {this.props.alert.error('Failed to change setting.');}
+    }
+
     async onUpdateClick() {
-        const result = owasp.test(this.password.current.value);
+        if (this.newPassword.current.value !== this.newPasswordVerify.current.value) {
+            this.props.alert.error('Passwords do not match.');
+            return;
+        }
+
+        const result = owasp.test(this.newPassword.current.value);
         if (!result.strong) {
             this.props.alert.error(result.errors.join('\n'));
             return;
         }
 
-        const response = await fetch('http://localhost:8000/api/authenticate', {
+        const response = await fetch('/api/authenticate', {
             method: 'PUT',
             mode: 'cors',
             cache: 'no-cache',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ password: this.password.current.value })
+            body: JSON.stringify({ password: this.newPassword.current.value })
         });
 
         const body = await response.json();
@@ -137,15 +160,20 @@ class SettingPage extends React.Component {
                     <div className="col-4 col-gap-9" >
                         <h2> Make your profile public? </h2>
                         <div className="row" style={{ marginTop: '10px' }}>
-                            <Switch onChange={this.handleChange} checked={this.state.checked} />
+                            <select onChange={this.onPrivacyChange} ref={this.privacy}>
+                                <option>Private (Default)</option>
+                                <option>Protected (Recommended)</option>
+                                <option>Public (Not recommended)</option>
+                            </select>
                         </div>
                         <h2> Change your password </h2>
                         <div className="row" ref={this.message}></div>
                         <div className="row" style={{ marginTop: '10px' }}>
-                            <input type="password" style={{ width: '16vw' }} placeholder="old password" />
+                            <input type="password" ref={this.newPassword}
+                                style={{ width: '16vw' }} placeholder="old password" />
                         </div>
                         <div className="row" style={{ marginTop: '10px' }}>
-                            <input type="password" ref={this.password} style={{ width: '16vw' }}
+                            <input type="password" ref={this.newPasswordVerify} style={{ width: '16vw' }}
                                 placeholder="new password" />
                         </div>
                         <div className="row" style={{ marginTop: '10px' }}>
@@ -154,7 +182,7 @@ class SettingPage extends React.Component {
                         </div>
                         <div className="row" style={{ marginTop: '10px' }}>
                             <button className="fill" onClick={this.onDeleteClick}
-                                style={{ width: '50%' }}> delete account </button>
+                                style={{ width: '50%' }}> Delete account </button>
                         </div>
                         <div className="row" style={{ marginTop: '10px' }}>
                             <button className="fill" onClick={this.onDownloadClick}
